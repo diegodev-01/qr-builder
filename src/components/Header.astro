@@ -1,0 +1,66 @@
+---
+import qrBuilderLogo from "../assets/qrBuilderLogo.svg";
+---
+
+<header>
+  <span class="logo-container">
+    <a href="https://astro.build" target="_blank" rel="noopener noreferrer">
+      <img
+        src={qrBuilderLogo.src}
+        width="60"
+        height="60"
+        alt="Qr Builder Logo"
+        class="logo"
+      />
+    </a>
+    <h1 class="title">QR Builder</h1>
+  </span>
+
+  <nav class="nav">
+    <ul class="nav-list">
+      <li class="nav-item"><a href="/build">Build QR</a></li>
+      <li class="nav-item"><a href="/scan">Scan QR</a></li>
+    </ul>
+  </nav>
+</header>
+
+<style>
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    gap: 2rem;
+  }
+
+  .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .logo {
+    width: 35px;
+    height: 35px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .nav-list {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+    padding: 0;
+    margin: 0;
+  }
+
+  .nav-item a {
+    text-decoration: none;
+    color: inherit;
+    font-weight: 500;
+  }
+</style>
