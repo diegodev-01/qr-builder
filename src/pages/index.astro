@@ -1,4 +1,6 @@
 ---
+import { QrBuilder } from "../components/qr-manager/qr-builder";
+import { QrManager } from "../components/qr-manager/qr-manager";
 import Layout from "../layouts/Layout.astro";
 ---
 
@@ -7,4 +9,6 @@ import Layout from "../layouts/Layout.astro";
     Build your QR code with our easy-to-use builder. Customize the design,
     color, and content to create a unique QR code that fits your needs.
   </div>
+
+  <QrBuilder initialText="https://tubini.com.bo" client:load />
 </Layout>

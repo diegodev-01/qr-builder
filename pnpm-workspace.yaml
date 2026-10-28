@@ -1,0 +1,2 @@
+minimumReleaseAgeExclude:
+  - '@astrojs/react@7.1.2'
