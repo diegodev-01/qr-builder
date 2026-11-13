@@ -5,10 +5,5 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="/build">
-  <div>
-    Build your QR code with our easy-to-use builder. Customize the design,
-    color, and content to create a unique QR code that fits your needs.
-  </div>
-
-  <QrBuilder initialText="https://tubini.com.bo" client:load />
+  <QrBuilder client:load />
 </Layout>
