@@ -2,10 +2,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5rem;
+  gap: 10rem;
   padding: 1rem;
   flex: 1;
   box-sizing: border-box;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .form {
@@ -48,6 +54,4 @@
 .customization {
   display: grid;
   gap: 0.5rem;
-  margin: 1rem 0;
-  padding: 1rem;
 }

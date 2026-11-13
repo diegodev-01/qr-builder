@@ -20,7 +20,7 @@ export function QrBuilder({ initialText = "" }: { initialText?: string }) {
 
   return (
     <div className={styles.container}>
-      <span>
+      <span className={styles.controls}>
         <form
           className={styles.form}
           onSubmit={(e) => {
@@ -61,7 +61,7 @@ export function QrBuilder({ initialText = "" }: { initialText?: string }) {
               type="checkbox"
               checked={customization.cornerRadius > 0}
               onChange={(e) =>
-                updateCustomization("cornerRadius", e.target.checked ? 0.25 : 0)
+                updateCustomization("cornerRadius", e.target.checked ? 1000 : 0)
               }
             />
           </article>
