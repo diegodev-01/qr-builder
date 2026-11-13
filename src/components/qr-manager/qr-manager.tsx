@@ -25,12 +25,6 @@ export const QrManager = ({ text, customization }: QrManagerProps) => {
     let cancelled = false;
     generateQr(text)
       .then((r) => {
-        console.info("[QrManager] Resultado de generateQr:", {
-          text,
-          size: r.size,
-          data: Array.from(r.data),
-          result: r,
-        });
         if (!cancelled) setQrData(r);
       })
       .catch((error) => {
