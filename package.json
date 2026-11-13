@@ -16,7 +16,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "astro": "^7.4.1",
-    "fast-ts-qr": "file:../fast-ts-qr/fast-ts-qr-0.1.2.tgz",
+    "fast-ts-qr": "^0.1.5",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   }
