@@ -21,8 +21,8 @@ importers:
         specifier: ^7.4.1
         version: 7.4.1(yaml@2.9.1)
       fast-ts-qr:
-        specifier: file:../fast-ts-qr/fast-ts-qr-0.1.2.tgz
-        version: file:../fast-ts-qr/fast-ts-qr-0.1.2.tgz
+        specifier: ^0.1.3
+        version: 0.1.3
       react:
         specifier: ^19.3.1
         version: 19.3.1
@@ -739,9 +739,8 @@ packages:
   fast-string-width@3.0.2:
     resolution: {integrity: sha512-gX8LrtNEI5hq8DVUfRQMbr5lpaS4nMIWV+7XEbXk2b8kiQIizgnlr12B4dA3ZEx3308ze0O4Q1R+cHts8kyUJg==}
 
-  fast-ts-qr@file:../fast-ts-qr/fast-ts-qr-0.1.2.tgz:
-    resolution: {integrity: sha512-7igsuzfPtzXty44TfZA89B44KYS5X6hEK/kx2LB3lFTDAQBhlCCqhkITXqrx49HDrl5A5+bGprz+WpgMJ49E2g==, tarball: file:../fast-ts-qr/fast-ts-qr-0.1.2.tgz}
-    version: 0.1.2
+  fast-ts-qr@0.1.3:
+    resolution: {integrity: sha512-Xm71qTWVWztdxORMdfZ5KVs6Ebjv1y8DLQOhlysC+hb7mAe8pAgMlHiFowDL39H6SYvxSJ2trJEKc65TFmcJPg==}
 
   fast-wrap-ansi@0.2.2:
     resolution: {integrity: sha512-7F2Fl+TjRSenLqlU3UjSH0iyqopqoZIu7eZVpEirP2g1GtWa2G/ecEmBdgz31+Mxr+ELclgg6sokpSFIQiZ02Q==}
@@ -1968,7 +1967,7 @@ snapshots:
     dependencies:
       fast-string-truncated-width: 3.0.3
 
-  fast-ts-qr@file:../fast-ts-qr/fast-ts-qr-0.1.2.tgz: {}
+  fast-ts-qr@0.1.3: {}
 
   fast-wrap-ansi@0.2.2:
     dependencies:
