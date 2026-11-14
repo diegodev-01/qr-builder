@@ -55,3 +55,23 @@
   display: grid;
   gap: 0.5rem;
 }
+
+.qrPreview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .container {
+    justify-content: space-around;
+    flex-direction: column-reverse;
+    gap: 2rem;
+  }
+
+  .form {
+    width: 100%;
+  }
+}

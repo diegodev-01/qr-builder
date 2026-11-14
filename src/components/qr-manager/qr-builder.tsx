@@ -96,7 +96,10 @@ export function QrBuilder({ initialText = "" }: { initialText?: string }) {
         </div>
       </span>
 
-      <QrManager text={text} customization={customization} />
+      <article className={styles.qrPreview}>
+        <QrManager text={text} customization={customization} />
+        <p className={styles.blurOverlayText}>{text}</p>
+      </article>
     </div>
   );
 }

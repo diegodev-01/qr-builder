@@ -43,9 +43,37 @@
   border-radius: 8px;
 }
 
-.blurOverlay p {
+.blurOverlayText {
   margin: 0;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 800;
   color: #333;
+  z-index: 2;
+}
+
+.testQr {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+  filter: blur(13px);
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .qrManager {
+    border: 1px solid #acacac;
+    border-radius: 1rem;
+    padding: 2rem;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    box-sizing: border-box;
+  }
+
+  .canvasContainer {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+  }
 }

@@ -156,7 +156,10 @@ export const QrManager = ({ text, customization }: QrManagerProps) => {
         />
         {!text && (
           <div className={styles.blurOverlay}>
-            <p>Ingresa un texto para generar tu QR</p>
+            <img src="/test-qr.png" alt="" className={styles.testQr} />
+            <p className={styles.blurOverlayText}>
+              Ingresa un texto para generar tu QR
+            </p>
           </div>
         )}
       </div>
