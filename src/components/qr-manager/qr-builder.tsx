@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { QrManager, type QrCustomization } from "./qr-manager";
 import styles from "./qr-builder.module.css";
+
+const COLOR_PRESETS = ["#000000", "#2563eb", "#7c3aed", "#059669", "#dc2626"];
 
 export function QrBuilder({ initialText = "" }: { initialText?: string }) {
   const [input, setInput] = useState(initialText);
   const [text, setText] = useState(initialText);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [customization, setCustomization] = useState<QrCustomization>({
     color: "#000000",
     cornerRadius: 0,
@@ -16,6 +21,28 @@ export function QrBuilder({ initialText = "" }: { initialText?: string }) {
     value: QrCustomization[K],
   ) => {
     setCustomization((current) => ({ ...current, [key]: value }));
+  };
+
+  const processLogoFile = (file?: File) => {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        updateCustomization("logo", reader.result);
+      }
+    };
+    reader.onerror = () =>
+      console.error("[QrBuilder] No se pudo leer el logo.");
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveLogo = () => {
+    updateCustomization("logo", null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   return (
@@ -45,55 +72,169 @@ export function QrBuilder({ initialText = "" }: { initialText?: string }) {
           </div>
         </form>
 
-        <div className={styles.customization}>
-          <label htmlFor="qr-color">Color</label>
-          <input
-            id="qr-color"
-            type="color"
-            value={customization.color}
-            onChange={(e) => updateCustomization("color", e.target.value)}
-          />
+        {/* PANEL DE PERSONALIZACIÓN MEJORADO */}
+        <section
+          className={styles.customizationCard}
+          aria-label="Personalización del QR"
+        >
+          <div className={styles.cardHeader}>
+            <h2 className={styles.cardTitle}>Personalización</h2>
+            <span className={styles.badge}>Estilo</span>
+          </div>
 
-          <article>
-            <label htmlFor="qr-corner-radius">Bordes redondeados:</label>
-            <input
-              id="qr-corner-radius"
-              type="checkbox"
-              checked={customization.cornerRadius > 0}
-              onChange={(e) =>
-                updateCustomization("cornerRadius", e.target.checked ? 1000 : 0)
-              }
-            />
-          </article>
+          <div className={styles.controlGroup}>
+            <div className={styles.labelRow}>
+              <label htmlFor="qr-color" className={styles.label}>
+                Color del código
+              </label>
+              <span className={styles.helperColor}>
+                <span className={styles.hexValue}>
+                  {customization.color.toUpperCase()}
+                </span>
+                <label
+                  htmlFor="qr-color"
+                  className={styles.customColorBtn}
+                  title="Elegir color personalizado"
+                >
+                  <span
+                    className={styles.colorWheelIcon}
+                    style={{ backgroundColor: customization.color }}
+                  />
+                  <input
+                    id="qr-color"
+                    type="color"
+                    className={styles.hiddenColorInput}
+                    value={customization.color}
+                    onChange={(e) =>
+                      updateCustomization("color", e.target.value)
+                    }
+                  />
+                </label>
+              </span>
+            </div>
 
-          <label htmlFor="qr-logo">Logo central</label>
-          <input
-            id="qr-logo"
-            type="file"
-            accept="image/png,image/jpeg,image/svg+xml,image/webp"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (!file) return;
-              const reader = new FileReader();
-              reader.onload = () => {
-                if (typeof reader.result === "string") {
-                  updateCustomization("logo", reader.result);
+            <div className={styles.colorControls}></div>
+          </div>
+
+          <hr className={styles.divider} />
+
+          <div className={styles.switchRow}>
+            <div className={styles.switchText}>
+              <label htmlFor="qr-corner-radius" className={styles.label}>
+                Bordes redondeados
+              </label>
+              <span className={styles.helperText}>
+                Suaviza las esquinas de los módulos del QR
+              </span>
+            </div>
+
+            <label className={styles.switch}>
+              <input
+                id="qr-corner-radius"
+                type="checkbox"
+                checked={customization.cornerRadius > 0}
+                onChange={(e) =>
+                  updateCustomization(
+                    "cornerRadius",
+                    e.target.checked ? 1000 : 0,
+                  )
                 }
-              };
-              reader.onerror = () =>
-                console.error("[QrBuilder] No se pudo leer el logo.");
-              reader.readAsDataURL(file);
-            }}
-          />
-          {customization.logo && (
-            <button
-              type="button"
-              onClick={() => updateCustomization("logo", null)}
-            >
-              Quitar logo
-            </button>
-          )}
-        </div>
+              />
+              <span className={styles.slider} />
+            </label>
+          </div>
+
+          <hr className={styles.divider} />
+
+          <div className={styles.controlGroup}>
+            <div className={styles.labelRowLogo}>
+              <label htmlFor="qr-logo" className={styles.label}>
+                Logo central
+              </label>
+              <span className={styles.helperText}>PNG, SVG, WEBP</span>
+            </div>
+
+            <input
+              ref={fileInputRef}
+              id="qr-logo"
+              type="file"
+              accept="image/png,image/jpeg,image/svg+xml,image/webp"
+              className={styles.hiddenFileInput}
+              onChange={(e) => processLogoFile(e.target.files?.[0])}
+            />
+
+            {!customization.logo ? (
+              <div
+                role="button"
+                tabIndex={0}
+                className={`${styles.dropzone} ${
+                  isDragging ? styles.dropzoneDragging : ""
+                }`}
+                onClick={() => fileInputRef.current?.click()}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    fileInputRef.current?.click();
+                  }
+                }}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setIsDragging(true);
+                }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setIsDragging(false);
+                  processLogoFile(e.dataTransfer.files?.[0]);
+                }}
+              >
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="17 8 12 3 7 8" />
+                  <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
+                <p className={styles.dropzoneText}>
+                  <strong>Sube un logo</strong> o arrástralo aquí
+                </p>
+              </div>
+            ) : (
+              <div className={styles.logoPreviewCard}>
+                <div className={styles.logoThumbnailWrapper}>
+                  <img
+                    src={customization.logo}
+                    alt="Vista previa del logo"
+                    className={styles.logoThumbnail}
+                  />
+                </div>
+                <div className={styles.logoActions}>
+                  <button
+                    type="button"
+                    className={styles.secondaryBtn}
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    Cambiar
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.dangerBtn}
+                    onClick={handleRemoveLogo}
+                  >
+                    Quitar
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
       </span>
 
       <article className={styles.qrPreview}>

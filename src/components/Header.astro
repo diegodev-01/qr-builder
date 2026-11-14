@@ -18,8 +18,43 @@ import qrBuilderLogo from "../assets/qrBuilderLogo.svg";
 
   <nav class="nav">
     <ul class="nav-list">
-      <li class="nav-item"><a href="/build">Build QR</a></li>
-      <li class="nav-item"><a href="/scan">Scan QR</a></li>
+      <li class="nav-item">
+        <a href="/build">
+          <svg
+            class="icon"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+          </svg>
+          <span>Build QR</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="/scan">
+          <svg
+            class="icon"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+            <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+            <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+            <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+            <rect x="7" y="7" width="10" height="10" rx="1"></rect>
+          </svg>
+          <span>Scan QR</span>
+        </a>
+      </li>
     </ul>
   </nav>
 </header>
@@ -62,5 +97,47 @@ import qrBuilderLogo from "../assets/qrBuilderLogo.svg";
     text-decoration: none;
     color: inherit;
     font-weight: 500;
+  }
+
+  .icon {
+    display: none;
+  }
+  @media screen and (max-width: 768px) {
+    .nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #ffffff;
+      border-top: 1px solid #e5e7eb;
+      box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.05);
+      z-index: 100;
+      padding: 0.75rem 1rem;
+      box-sizing: border-box;
+    }
+
+    .nav-list {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      gap: 0;
+    }
+
+    .nav-item a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.85rem;
+      color: #4b5563;
+    }
+
+    .nav-item a:hover {
+      color: #2563eb;
+    }
+
+    .icon {
+      display: block;
+    }
   }
 </style>
