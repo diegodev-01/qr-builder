@@ -8,6 +8,29 @@
   box-sizing: border-box;
 }
 
+.qrPreview {
+  width: 234px;
+  max-width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.blurOverlayText {
+  max-width: 100%;
+  margin: 0.5rem 0 0;
+  text-align: center;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
 .controls {
   display: flex;
   flex-direction: column;
