@@ -148,8 +148,6 @@ export const QrManager = ({ text, customization }: QrManagerProps) => {
         <canvas
           ref={canvasRef}
           style={{
-            width: 200,
-            height: 200,
             imageRendering:
               customization.cornerRadius === 0 ? "pixelated" : "auto",
           }}
