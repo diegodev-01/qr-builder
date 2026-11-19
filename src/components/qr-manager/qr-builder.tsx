@@ -5,11 +5,13 @@ import {
   type QrManagerHandle,
 } from "./qr-manager";
 import styles from "./qr-builder.module.css";
+import toast, { Toaster } from "react-hot-toast";
 
 export function QrBuilder({ initialText = "" }: { initialText?: string }) {
   const [input, setInput] = useState(initialText);
   const [text, setText] = useState(initialText);
   const [isDragging, setIsDragging] = useState(false);
+  const [isQrReady, setIsQrReady] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const qrManagerRef = useRef<QrManagerHandle>(null);
 
@@ -28,16 +30,22 @@ export function QrBuilder({ initialText = "" }: { initialText?: string }) {
 
   const processLogoFile = (file?: File) => {
     if (!file) return;
-    if (!file.type.startsWith("image/")) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Selecciona una imagen válida.");
+      return;
+    }
 
     const reader = new FileReader();
     reader.onload = () => {
       if (typeof reader.result === "string") {
         updateCustomization("logo", reader.result);
+        toast.success("Logo agregado.");
       }
     };
-    reader.onerror = () =>
+    reader.onerror = () => {
       console.error("[QrBuilder] No se pudo leer el logo.");
+      toast.error("No se pudo leer el logo.");
+    };
     reader.readAsDataURL(file);
   };
 
@@ -45,6 +53,28 @@ export function QrBuilder({ initialText = "" }: { initialText?: string }) {
     updateCustomization("logo", null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
+    }
+    toast.success("Logo eliminado.");
+  };
+
+  const runQrAction = async (
+    action: (() => void | Promise<void>) | undefined,
+    successMessage: string,
+  ) => {
+    if (!isQrReady) {
+      toast.error("Genera primero un QR para continuar.");
+      return;
+    }
+
+    try {
+      await action?.();
+      toast.success(successMessage);
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "No se pudo completar la acción.";
+      toast.error(message);
     }
   };
 
@@ -55,7 +85,14 @@ export function QrBuilder({ initialText = "" }: { initialText?: string }) {
           className={styles.form}
           onSubmit={(e) => {
             e.preventDefault();
-            setText(input.trim());
+            const nextText = input.trim();
+            if (!nextText) {
+              toast.error("Ingresa un texto para generar el QR.");
+              return;
+            }
+            setText(nextText);
+            setIsQrReady(false);
+            toast.success("QR generado.");
           }}
         >
           <div className={styles.qrInput}>
@@ -246,42 +283,82 @@ export function QrBuilder({ initialText = "" }: { initialText?: string }) {
           ref={qrManagerRef}
           text={text}
           customization={customization}
+          onReadyChange={setIsQrReady}
         />
+        {!isQrReady && (
+          <p className={styles.actionHint} role="status">
+            Genera un QR para habilitar las acciones
+          </p>
+        )}
         <div className={styles.actions}>
           <button
             type="button"
             className={styles.copyButton}
-            onClick={() => qrManagerRef.current?.copyPng()}
-            disabled={!text}
+            onClick={() =>
+              runQrAction(
+                () => qrManagerRef.current?.copyPng(),
+                "PNG copiado al portapapeles.",
+              )
+            }
+            disabled={!isQrReady}
+            title={!isQrReady ? "Genera primero un QR" : undefined}
           >
             Copiar PNG
           </button>
           <button
             type="button"
             className={styles.downloadButton}
-            onClick={() => qrManagerRef.current?.downloadPng()}
-            disabled={!text}
+            onClick={() =>
+              runQrAction(
+                () => qrManagerRef.current?.downloadPng(),
+                "PNG descargado.",
+              )
+            }
+            disabled={!isQrReady}
+            title={!isQrReady ? "Genera primero un QR" : undefined}
           >
             Descargar PNG
           </button>
           <button
             type="button"
             className={styles.copyButton}
-            onClick={() => qrManagerRef.current?.copySvg()}
-            disabled={!text}
+            onClick={() =>
+              runQrAction(
+                () => qrManagerRef.current?.copySvg(),
+                "SVG copiado al portapapeles.",
+              )
+            }
+            disabled={!isQrReady}
+            title={!isQrReady ? "Genera primero un QR" : undefined}
           >
             Copiar SVG
           </button>
           <button
             type="button"
             className={styles.downloadButton}
-            onClick={() => qrManagerRef.current?.downloadSvg()}
-            disabled={!text}
+            onClick={() =>
+              runQrAction(
+                () => qrManagerRef.current?.downloadSvg(),
+                "SVG descargado.",
+              )
+            }
+            disabled={!isQrReady}
+            title={!isQrReady ? "Genera primero un QR" : undefined}
           >
             Descargar SVG
           </button>
         </div>
       </article>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 2600,
+          style: {
+            borderRadius: "10px",
+            fontSize: "0.875rem",
+          },
+        }}
+      />
     </div>
   );
 }

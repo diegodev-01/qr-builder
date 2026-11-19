@@ -368,6 +368,14 @@
   max-width: 234px;
 }
 
+.actionHint {
+  margin: -0.25rem 0 0;
+  max-width: 234px;
+  color: #6b7280;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
 .copyButton,
 .downloadButton {
   min-height: 38px;
@@ -416,6 +424,26 @@
 .downloadButton:focus-visible {
   outline: 3px solid rgba(37, 99, 235, 0.25);
   outline-offset: 2px;
+}
+
+.copyButton:disabled,
+.downloadButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
+}
+
+.copyButton:disabled:hover,
+.downloadButton:disabled:hover {
+  border-color: #d1d5db;
+  background: #ffffff;
+  color: #374151;
+}
+
+.downloadButton:disabled:hover {
+  border-color: #111827;
+  background: #111827;
+  color: #ffffff;
 }
 
 @media (max-width: 768px) {

@@ -17,12 +17,13 @@ export type QrCustomization = {
 type QrManagerProps = {
   text: string;
   customization: QrCustomization;
+  onReadyChange?: (ready: boolean) => void;
 };
 
 export type QrManagerHandle = {
   copyPng: () => Promise<void>;
   copySvg: () => Promise<void>;
-  downloadPng: () => void;
+  downloadPng: () => Promise<void>;
   downloadSvg: () => void;
   isReady: () => boolean;
 };
@@ -46,27 +47,37 @@ const downloadBlob = (blob: Blob, filename: string) => {
 };
 
 export const QrManager = forwardRef<QrManagerHandle, QrManagerProps>(
-  ({ text, customization }, ref) => {
+  ({ text, customization, onReadyChange }, ref) => {
     const [qrData, setQrData] = useState<QrResult | null>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
       if (!text) {
         setQrData(null);
+        onReadyChange?.(false);
         return;
       }
+      setQrData(null);
+      onReadyChange?.(false);
       let cancelled = false;
       generateQr(text)
         .then((r) => {
-          if (!cancelled) setQrData(r);
+          if (!cancelled) {
+            setQrData(r);
+          }
         })
         .catch((error) => {
+          if (!cancelled) onReadyChange?.(false);
           console.error("[QrManager] Error en generateQr:", error);
         });
       return () => {
         cancelled = true;
       };
-    }, [text]);
+    }, [text, onReadyChange]);
+
+    useEffect(() => {
+      onReadyChange?.(Boolean(text && qrData));
+    }, [text, qrData, onReadyChange]);
 
     useEffect(() => {
       const canvas = canvasRef.current;
@@ -183,8 +194,7 @@ export const QrManager = forwardRef<QrManagerHandle, QrManagerProps>(
     const copyPng = async () => {
       const canvas = canvasRef.current;
       if (!canvas || !qrData) {
-        console.warn("[QrManager] El QR todavía no está listo.");
-        return;
+        throw new Error("El QR todavía no está listo.");
       }
 
       try {
@@ -211,23 +221,26 @@ export const QrManager = forwardRef<QrManagerHandle, QrManagerProps>(
         console.info("[QrManager] PNG copiado.");
       } catch (error) {
         console.error("[QrManager] Error al copiar PNG:", error);
+        throw error;
       }
     };
 
-    const downloadPng = () => {
+    const downloadPng = async () => {
       const canvas = canvasRef.current;
       if (!canvas || !qrData) {
-        console.warn("[QrManager] El QR todavía no está listo.");
-        return;
+        throw new Error("El QR todavía no está listo.");
       }
 
-      canvas.toBlob((blob) => {
-        if (!blob) {
-          console.error("[QrManager] No se pudo crear el PNG.");
-          return;
-        }
-        downloadBlob(blob, "qr-code.png");
-      }, "image/png");
+      const blob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob(
+          (result) =>
+            result
+              ? resolve(result)
+              : reject(new Error("No se pudo crear el PNG.")),
+          "image/png",
+        );
+      });
+      downloadBlob(blob, "qr-code.png");
     };
 
     const createSvg = () => {
@@ -331,14 +344,14 @@ export const QrManager = forwardRef<QrManagerHandle, QrManagerProps>(
         console.info("[QrManager] SVG copiado como texto.");
       } catch (error) {
         console.error("[QrManager] Error al copiar SVG:", error);
+        throw error;
       }
     };
 
     const downloadSvg = () => {
       const svg = createSvg();
       if (!svg) {
-        console.warn("[QrManager] El QR todavía no está listo.");
-        return;
+        throw new Error("El QR todavía no está listo.");
       }
       downloadBlob(
         new Blob([svg], { type: "image/svg+xml;charset=utf-8" }),
