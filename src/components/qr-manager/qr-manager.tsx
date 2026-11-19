@@ -24,7 +24,7 @@ export type QrManagerHandle = {
   copyPng: () => Promise<void>;
   copySvg: () => Promise<void>;
   downloadPng: () => Promise<void>;
-  downloadSvg: () => void;
+  downloadSvg: () => Promise<void>;
   isReady: () => boolean;
 };
 
@@ -271,7 +271,36 @@ export const QrManager = forwardRef<QrManagerHandle, QrManagerProps>(
       return exportCanvas;
     };
 
-    const createSvg = () => {
+    const rasterizeLogo = (source: string) =>
+      new Promise<string>((resolve, reject) => {
+        const logoImage = new Image();
+        logoImage.onload = () => {
+          const maxSize = 512;
+          const aspectRatio =
+            logoImage.naturalWidth / logoImage.naturalHeight;
+          const width =
+            aspectRatio >= 1 ? maxSize : Math.round(maxSize * aspectRatio);
+          const height =
+            aspectRatio >= 1 ? Math.round(maxSize / aspectRatio) : maxSize;
+          const logoCanvas = document.createElement("canvas");
+          logoCanvas.width = width;
+          logoCanvas.height = height;
+          const ctx = logoCanvas.getContext("2d");
+
+          if (!ctx) {
+            reject(new Error("No se pudo procesar el logo."));
+            return;
+          }
+
+          ctx.drawImage(logoImage, 0, 0, width, height);
+          resolve(logoCanvas.toDataURL("image/png"));
+        };
+        logoImage.onerror = () =>
+          reject(new Error("No se pudo cargar el logo del QR."));
+        logoImage.src = source;
+      });
+
+    const createSvg = async () => {
       if (!qrData) return null;
 
       const { size, data } = qrData;
@@ -323,16 +352,42 @@ export const QrManager = forwardRef<QrManagerHandle, QrManagerProps>(
 
       let logoSvg = "";
       if (logo) {
-        const logoSize = size * 0.2;
-        const logoX = (size - logoSize) / 2;
-        const logoY = (size - logoSize) / 2;
+        let embeddedLogo = logo;
+        try {
+          embeddedLogo = await rasterizeLogo(logo);
+        } catch (error) {
+          console.error("[QrManager] Error al incrustar el logo:", error);
+        }
+
+        const logoImage = new Image();
+        logoImage.src = logo;
+        await new Promise<void>((resolve) => {
+          if (logoImage.complete) {
+            resolve();
+          } else {
+            logoImage.onload = () => resolve();
+            logoImage.onerror = () => resolve();
+          }
+        });
+
+        const maxLogoSize = size * 0.2;
+        const aspectRatio =
+          logoImage.naturalWidth > 0 && logoImage.naturalHeight > 0
+            ? logoImage.naturalWidth / logoImage.naturalHeight
+            : 1;
+        const logoWidth =
+          aspectRatio >= 1 ? maxLogoSize : maxLogoSize * aspectRatio;
+        const logoHeight =
+          aspectRatio >= 1 ? maxLogoSize / aspectRatio : maxLogoSize;
+        const logoX = (size - logoWidth) / 2;
+        const logoY = (size - logoHeight) / 2;
         const padding = size * 0.025;
         logoSvg =
           `<rect x="${logoX - padding}" y="${logoY - padding}" ` +
-          `width="${logoSize + padding * 2}" height="${logoSize + padding * 2}" ` +
-          `fill="#ffffff"/>` +
-          `<image href="${escapeXml(logo)}" x="${logoX}" y="${logoY}" ` +
-          `width="${logoSize}" height="${logoSize}" preserveAspectRatio="xMidYMid meet"/>`;
+          `width="${logoWidth + padding * 2}" height="${logoHeight + padding * 2}" ` +
+          `rx="${padding}" ry="${padding}" fill="#ffffff"/>` +
+          `<image href="${escapeXml(embeddedLogo)}" x="${logoX}" y="${logoY}" ` +
+          `width="${logoWidth}" height="${logoHeight}" preserveAspectRatio="xMidYMid meet"/>`;
       }
 
       return [
@@ -352,7 +407,7 @@ export const QrManager = forwardRef<QrManagerHandle, QrManagerProps>(
 
     const copySvg = async () => {
       try {
-        const svg = createSvg();
+        const svg = await createSvg();
         if (!svg) throw new Error("El QR todavía no está listo.");
         const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
 
@@ -382,8 +437,8 @@ export const QrManager = forwardRef<QrManagerHandle, QrManagerProps>(
       }
     };
 
-    const downloadSvg = () => {
-      const svg = createSvg();
+    const downloadSvg = async () => {
+      const svg = await createSvg();
       if (!svg) {
         throw new Error("El QR todavía no está listo.");
       }
