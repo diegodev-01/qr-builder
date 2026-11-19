@@ -87,7 +87,7 @@ export const QrManager = forwardRef<QrManagerHandle, QrManagerProps>(
       const { size } = qrData;
       const data = qrData.data;
       const { color, cornerRadius, logo } = customization;
-      const renderScale = 10;
+      const renderScale = Math.max(16, Math.ceil(2048 / size));
       const cellSize = renderScale;
       const radius = Math.min(Math.max(cornerRadius, 0), 0.5) * cellSize;
 
@@ -246,8 +246,9 @@ export const QrManager = forwardRef<QrManagerHandle, QrManagerProps>(
     };
 
     const createPaddedCanvas = (source: HTMLCanvasElement) => {
-      const padding = Math.round(source.width * 0.08);
-      const exportSize = source.width + padding * 2;
+      const exportSize = 2048;
+      const qrSize = Math.round(exportSize * 0.84);
+      const padding = Math.round((exportSize - qrSize) / 2);
       const cornerRadius = Math.round(exportSize * 0.08);
       const exportCanvas = document.createElement("canvas");
       exportCanvas.width = exportSize;
@@ -264,7 +265,8 @@ export const QrManager = forwardRef<QrManagerHandle, QrManagerProps>(
       ctx.clip();
       ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, exportSize, exportSize);
-      ctx.drawImage(source, padding, padding, source.width, source.height);
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(source, padding, padding, qrSize, qrSize);
 
       return exportCanvas;
     };
@@ -409,8 +411,7 @@ export const QrManager = forwardRef<QrManagerHandle, QrManagerProps>(
           <canvas
             ref={canvasRef}
             style={{
-              imageRendering:
-                customization.cornerRadius === 0 ? "pixelated" : "auto",
+              imageRendering: "auto",
             }}
           />
           {!text && (
