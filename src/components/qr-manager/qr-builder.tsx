@@ -238,8 +238,22 @@ export function QrBuilder({ initialText = "" }: { initialText?: string }) {
       </span>
 
       <article className={styles.qrPreview}>
-        <QrManager text={text} customization={customization} />
         <p className={styles.blurOverlayText}>{text}</p>
+        <QrManager text={text} customization={customization} />
+        <div className={styles.actions}>
+          <button type="button" className={styles.copyButton}>
+            Copiar PNG
+          </button>
+          <button type="button" className={styles.downloadButton}>
+            Descargar PNG
+          </button>
+          <button type="button" className={styles.copyButton}>
+            Copiar SVG
+          </button>
+          <button type="button" className={styles.downloadButton}>
+            Descargar SVG
+          </button>
+        </div>
       </article>
     </div>
   );
