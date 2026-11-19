@@ -198,8 +198,9 @@ export const QrManager = forwardRef<QrManagerHandle, QrManagerProps>(
       }
 
       try {
+        const exportCanvas = createPaddedCanvas(canvas);
         const blob = await new Promise<Blob>((resolve, reject) => {
-          canvas.toBlob(
+          exportCanvas.toBlob(
             (result) =>
               result
                 ? resolve(result)
@@ -231,8 +232,9 @@ export const QrManager = forwardRef<QrManagerHandle, QrManagerProps>(
         throw new Error("El QR todavía no está listo.");
       }
 
+      const exportCanvas = createPaddedCanvas(canvas);
       const blob = await new Promise<Blob>((resolve, reject) => {
-        canvas.toBlob(
+        exportCanvas.toBlob(
           (result) =>
             result
               ? resolve(result)
@@ -243,11 +245,38 @@ export const QrManager = forwardRef<QrManagerHandle, QrManagerProps>(
       downloadBlob(blob, "qr-code.png");
     };
 
+    const createPaddedCanvas = (source: HTMLCanvasElement) => {
+      const padding = Math.round(source.width * 0.08);
+      const exportSize = source.width + padding * 2;
+      const cornerRadius = Math.round(exportSize * 0.08);
+      const exportCanvas = document.createElement("canvas");
+      exportCanvas.width = exportSize;
+      exportCanvas.height = exportSize;
+      const ctx = exportCanvas.getContext("2d");
+
+      if (!ctx) {
+        throw new Error("No se pudo preparar la imagen del QR.");
+      }
+
+      ctx.clearRect(0, 0, exportSize, exportSize);
+      ctx.beginPath();
+      ctx.roundRect(0, 0, exportSize, exportSize, cornerRadius);
+      ctx.clip();
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, exportSize, exportSize);
+      ctx.drawImage(source, padding, padding, source.width, source.height);
+
+      return exportCanvas;
+    };
+
     const createSvg = () => {
       if (!qrData) return null;
 
       const { size, data } = qrData;
       const { color, cornerRadius, logo } = customization;
+      const borderPadding = size * 0.08;
+      const exportSize = size + borderPadding * 2;
+      const outerRadius = exportSize * 0.08;
       const radius = Math.min(Math.max(cornerRadius, 0), 0.5);
       const moduleRadius = radius;
       const finderRadius = Math.min(radius * 2, 2);
@@ -305,13 +334,16 @@ export const QrManager = forwardRef<QrManagerHandle, QrManagerProps>(
       }
 
       return [
-        `<svg xmlns="http://www.w3.org/2000/svg" width="${size * 10}" height="${size * 10}" viewBox="0 0 ${size} ${size}" shape-rendering="crispEdges">`,
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${exportSize * 10}" height="${exportSize * 10}" viewBox="0 0 ${exportSize} ${exportSize}" shape-rendering="crispEdges">`,
+        `<rect width="${exportSize}" height="${exportSize}" rx="${outerRadius}" ry="${outerRadius}" fill="#ffffff"/>`,
+        `<g transform="translate(${borderPadding} ${borderPadding})">`,
         `<rect width="${size}" height="${size}" fill="#ffffff"/>`,
         `<g fill="${escapeXml(color)}">`,
         modules.join(""),
         `</g>`,
         finders.join(""),
         logoSvg,
+        `</g>`,
         `</svg>`,
       ].join("");
     };
