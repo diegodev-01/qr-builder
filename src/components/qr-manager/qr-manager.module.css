@@ -66,6 +66,79 @@
   z-index: 1;
 }
 
+.actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  width: 200px;
+  max-width: 100%;
+}
+
+.copyButton,
+.downloadButton {
+  min-height: 38px;
+  border-radius: 8px;
+  padding: 0.55rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.copyButton {
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #374151;
+}
+
+.downloadButton {
+  border: 1px solid #111827;
+  background: #111827;
+  color: #ffffff;
+}
+
+.copyButton:hover {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.downloadButton:hover {
+  border-color: #2563eb;
+  background: #2563eb;
+}
+
+.copyButton:active,
+.downloadButton:active {
+  transform: translateY(1px);
+}
+
+.copyButton:focus-visible,
+.downloadButton:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.25);
+  outline-offset: 2px;
+}
+
+.copyButton:disabled,
+.downloadButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
+}
+
+.actionStatus {
+  min-height: 1.25rem;
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
 @media (max-width: 768px) {
   .qrManager {
     border: 1px solid #acacac;

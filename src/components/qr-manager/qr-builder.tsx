@@ -1,14 +1,17 @@
 import { useState, useRef } from "react";
-import { QrManager, type QrCustomization } from "./qr-manager";
+import {
+  QrManager,
+  type QrCustomization,
+  type QrManagerHandle,
+} from "./qr-manager";
 import styles from "./qr-builder.module.css";
-
-const COLOR_PRESETS = ["#000000", "#2563eb", "#7c3aed", "#059669", "#dc2626"];
 
 export function QrBuilder({ initialText = "" }: { initialText?: string }) {
   const [input, setInput] = useState(initialText);
   const [text, setText] = useState(initialText);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const qrManagerRef = useRef<QrManagerHandle>(null);
 
   const [customization, setCustomization] = useState<QrCustomization>({
     color: "#000000",
@@ -239,18 +242,42 @@ export function QrBuilder({ initialText = "" }: { initialText?: string }) {
 
       <article className={styles.qrPreview}>
         <p className={styles.blurOverlayText}>{text}</p>
-        <QrManager text={text} customization={customization} />
+        <QrManager
+          ref={qrManagerRef}
+          text={text}
+          customization={customization}
+        />
         <div className={styles.actions}>
-          <button type="button" className={styles.copyButton}>
+          <button
+            type="button"
+            className={styles.copyButton}
+            onClick={() => qrManagerRef.current?.copyPng()}
+            disabled={!text}
+          >
             Copiar PNG
           </button>
-          <button type="button" className={styles.downloadButton}>
+          <button
+            type="button"
+            className={styles.downloadButton}
+            onClick={() => qrManagerRef.current?.downloadPng()}
+            disabled={!text}
+          >
             Descargar PNG
           </button>
-          <button type="button" className={styles.copyButton}>
+          <button
+            type="button"
+            className={styles.copyButton}
+            onClick={() => qrManagerRef.current?.copySvg()}
+            disabled={!text}
+          >
             Copiar SVG
           </button>
-          <button type="button" className={styles.downloadButton}>
+          <button
+            type="button"
+            className={styles.downloadButton}
+            onClick={() => qrManagerRef.current?.downloadSvg()}
+            disabled={!text}
+          >
             Descargar SVG
           </button>
         </div>
