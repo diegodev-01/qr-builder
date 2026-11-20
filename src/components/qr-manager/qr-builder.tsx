@@ -278,7 +278,7 @@ export function QrBuilder({ initialText = "" }: { initialText?: string }) {
       </span>
 
       <article className={styles.qrPreview}>
-        <p className={styles.blurOverlayText}>{text}</p>
+        {isQrReady && <p className={styles.blurOverlayText}>{text}</p>}
         <QrManager
           ref={qrManagerRef}
           text={text}

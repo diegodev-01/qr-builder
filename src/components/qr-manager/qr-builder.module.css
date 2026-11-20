@@ -448,9 +448,13 @@
 
 @media (max-width: 768px) {
   .container {
-    justify-content: space-around;
+    align-items: stretch;
+    justify-content: flex-start;
     flex-direction: column-reverse;
     gap: 2rem;
+    margin-bottom: 1rem;
+    min-height: max-content;
+    flex: 0 0 auto;
   }
 
   .form {

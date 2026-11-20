@@ -63,7 +63,11 @@ import qrBuilderLogo from "../assets/qrBuilderLogo.svg";
   header {
     display: flex;
     align-items: center;
+    position: sticky;
+    top: 0;
     justify-content: space-between;
+    background-color: #ffffff;
+    z-index: 100;
     padding: 1rem;
     gap: 2rem;
   }
@@ -138,6 +142,17 @@ import qrBuilderLogo from "../assets/qrBuilderLogo.svg";
 
     .icon {
       display: block;
+    }
+
+    .logo {
+      width: 20px;
+      height: 20px;
+    }
+
+    .title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 0;
     }
   }
 </style>
