@@ -1,0 +1,90 @@
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
+  max-width: 234px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 2.25rem 1fr 1fr;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.format {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #6b7280;
+}
+
+.copy,
+.download {
+  min-height: 32px;
+  padding: 0.35rem 0.5rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.copy {
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: #374151;
+}
+
+.download {
+  border: 1px solid #111827;
+  background: #111827;
+  color: #fff;
+}
+
+.copy:hover:not(:disabled) {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.download:hover:not(:disabled) {
+  border-color: #2563eb;
+  background: #2563eb;
+}
+
+.copy:active:not(:disabled),
+.download:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.copy:focus-visible,
+.download:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.25);
+  outline-offset: 2px;
+}
+
+.copy:disabled,
+.download:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+@media (max-width: 768px) {
+  .actions {
+    max-width: 20rem;
+  }
+
+  .copy,
+  .download {
+    min-height: 30px;
+    font-size: 0.7rem;
+  }
+}

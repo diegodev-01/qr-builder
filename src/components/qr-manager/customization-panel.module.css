@@ -1,0 +1,289 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-inline: 1.25rem;
+}
+
+.cardHeader,
+.labelRow,
+.switchRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.switchRow {
+  gap: 1rem;
+}
+
+.cardTitle {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.badge {
+  padding: 0.2rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.divider {
+  margin: 0;
+  border: none;
+  border-top: 1px solid #f3f4f6;
+}
+
+.controlGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.labelRowLogo {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1f2937;
+  cursor: pointer;
+}
+
+.helperText {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+/* Color picker */
+.helperColor {
+  display: flex;
+  align-items: center;
+}
+
+.hexValue {
+  padding: 0.15rem 0.45rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #f9fafb;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.customColorBtn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.colorWheelIcon {
+  width: 14px;
+  height: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 50%;
+}
+
+.hiddenColorInput {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Switch */
+.switchText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  width: 44px;
+  height: 24px;
+}
+
+.switch input {
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+.slider {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background-color: #9c9c9c;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.slider::before {
+  position: absolute;
+  bottom: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  content: "";
+  transition: 0.2s ease;
+}
+
+.switch input:checked + .slider {
+  background-color: #2563eb;
+}
+
+.switch input:focus-visible + .slider {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+}
+
+.switch input:checked + .slider::before {
+  transform: translateX(20px);
+}
+
+/* Logo uploader */
+.hiddenFileInput {
+  display: none;
+}
+
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 1.25rem 1rem;
+  border: 1.5px dashed #d1d5db;
+  border-radius: 12px;
+  background: #f9fafb;
+  color: #6b7280;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dropzone:hover,
+.dropzoneDragging {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.dropzoneText {
+  margin: 0;
+  font-size: 0.825rem;
+}
+
+.dropzoneText strong {
+  color: #111827;
+}
+
+.dropzone:hover .dropzoneText strong {
+  color: #2563eb;
+}
+
+.logoPreviewCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #f9fafb;
+}
+
+.logoThumbnailWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  width: 44px;
+  height: 44px;
+  padding: 4px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.logoThumbnail {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.logoActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.secondaryBtn,
+.dangerBtn {
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.secondaryBtn {
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: #374151;
+}
+
+.secondaryBtn:hover {
+  background: #f3f4f6;
+}
+
+.dangerBtn {
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.dangerBtn:hover {
+  background: #fee2e2;
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding-inline: 0;
+  }
+
+  .controlGroup {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .labelRow {
+    width: 100%;
+  }
+
+  .labelRowLogo {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dropzone {
+    padding-block: 0.5rem;
+    border: 1px solid #acacac;
+    border-radius: 0.75rem;
+  }
+
+  .dropzoneText {
+    display: none;
+  }
+}
