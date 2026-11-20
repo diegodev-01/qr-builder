@@ -29,8 +29,6 @@ export function QrBuilder({ initialText = "" }: { initialText?: string }) {
       toast.error("Ingresa un texto para generar el QR.");
       return;
     }
-    // QrManager reports readiness itself when `text` changes. Resetting it for
-    // an unchanged text would leave the actions disabled, since nothing re-runs.
     if (nextText !== text) {
       setText(nextText);
       setIsQrReady(false);

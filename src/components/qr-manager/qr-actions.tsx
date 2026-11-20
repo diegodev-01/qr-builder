@@ -10,17 +10,11 @@ type QrActionsProps = {
   ) => void;
 };
 
-const FORMATS = [
-  {
-    label: "PNG",
-    copy: { method: "copyPng", message: "PNG copiado al portapapeles." },
-    download: { method: "downloadPng", message: "PNG descargado." },
-  },
-  {
-    label: "SVG",
-    copy: { method: "copySvg", message: "SVG copiado al portapapeles." },
-    download: { method: "downloadSvg", message: "SVG descargado." },
-  },
+const ACTIONS = [
+  { verb: "Copiar", format: "PNG", variant: "copy", method: "copyPng", message: "PNG copiado al portapapeles." },
+  { verb: "Descargar", format: "PNG", variant: "download", method: "downloadPng", message: "PNG descargado." },
+  { verb: "Copiar", format: "SVG", variant: "copy", method: "copySvg", message: "SVG copiado al portapapeles." },
+  { verb: "Descargar", format: "SVG", variant: "download", method: "downloadSvg", message: "SVG descargado." },
 ] as const;
 
 export function QrActions({ disabled, getHandle, onRun }: QrActionsProps) {
@@ -28,30 +22,17 @@ export function QrActions({ disabled, getHandle, onRun }: QrActionsProps) {
 
   return (
     <div className={styles.actions}>
-      {FORMATS.map(({ label, copy, download }) => (
-        <div key={label} className={styles.row}>
-          <span className={styles.format}>{label}</span>
-          <button
-            type="button"
-            className={styles.copy}
-            disabled={disabled}
-            title={title}
-            onClick={() => onRun(() => getHandle()?.[copy.method](), copy.message)}
-          >
-            Copiar
-          </button>
-          <button
-            type="button"
-            className={styles.download}
-            disabled={disabled}
-            title={title}
-            onClick={() =>
-              onRun(() => getHandle()?.[download.method](), download.message)
-            }
-          >
-            Descargar
-          </button>
-        </div>
+      {ACTIONS.map(({ verb, format, variant, method, message }) => (
+        <button
+          key={method}
+          type="button"
+          className={styles[variant]}
+          disabled={disabled}
+          title={title}
+          onClick={() => onRun(() => getHandle()?.[method](), message)}
+        >
+          <span>{verb}</span> <span>{format}</span>
+        </button>
       ))}
     </div>
   );
